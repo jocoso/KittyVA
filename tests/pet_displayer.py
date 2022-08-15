@@ -3,70 +3,77 @@ import random
 import tkinter as tk
 import os
 
-x = 30
-cycle = 0
-check = 0
-idle_num =[1,2,3,4,5]
-event_number = 0
-impath = os.path.realpath("../resources") + "\\"
+class Pet(tk.Tk):
+    def __init__(self):
+        tk.Tk.__init__(self)
+        self.x = 30
+        self.cycle = 0
+        self.check = 0
+        
+        self.idle_num =[1,2,3,4]
+        self.event_number = 0
+        self.frame = None
+        self.impath = os.path.realpath("../resources") + "\\"
 
-def event(cycle,check,event_number,x):
-    if event_number in idle_num:
-        check = 0
-        window.after( 400, update, cycle, check, event_number, x ) #no. 1,2,3 = idle
+        self.idle = [tk.PhotoImage(file=self.impath+'cat_idle.gif',format = 'gif -index %i' %(i)) for i in range(4)]#idle gif
+        
+         #window configuration
+        #self.geometry('300x300+'+str(self.x)+'+30')
+        self.config(highlightbackground='black')
+        self.label = tk.Label(self,bd=0,bg='black')
+        self.overrideredirect(True)
+        self.wm_attributes('-transparentcolor','black')
+        
+        self.label.pack(side="right", fill="both", expand=True)
+        self.label.bind("<ButtonPress-1>", self.start_move)
+        self.label.bind("<ButtonRelease-1>", self.stop_move)
+        self.label.bind("<B1-Motion>", self.do_move)
+        
+        self.label.pack()
 
-def gif_work(cycle, frames, event_number, first_num, last_num):
-    if cycle < len(frames) -1:
-        cycle += 1
-    else:
-        cycle = 0
+        #loop the program
+        self.after(1,self.update)
+        self.mainloop()
 
-    event_number = 1
-    return cycle, event_number
+    def event(self):        
+        self.check = 0
+        self.after( 200, self.update ) #no. 1,2,3 = idle
 
-def update(cycle,check,event_number,x):
-    #idle
-    if check == 0:
-        frame = idle[cycle]
-        cycle ,event_number = gif_work(cycle,idle,event_number,1,5)
-    label.configure(image=frame)
-    window.after(1, event, cycle, check, event_number, x)
+    def gif_work(self):
+        if self.cycle < len(self.idle) -1:
+            self.cycle += 1
+        else:
+            self.cycle = 0
+        self.event_number = random.randrange(1, 5 + 1,1)
 
-def start_move(event):
-    window.x = event.x
-    window.y = event.y
+    def update(self):
+        #idle
+        if self.check == 0:
+            self.frame = self.idle[self.cycle]
+            self.gif_work()
+            
+        self.geometry('300x300+'+str(self.x)+'+30')
+        self.label.configure(image=self.frame)
+        self.after(1, self.event)
 
-def stop_move(event):
-    window.x = None
-    window.y = None
+    def start_move(self, event):
+        self.x = event.x
+        self.y = event.y
 
-def do_move(event):
-    delta_x = event.x - window.x
-    delta_y = event.y - window.y
-    move_x = window.winfo_x() + delta_x
-    move_y = window.winfo_y() + delta_y
-    window.geometry(f"+{move_x}+{move_y}")
+    def stop_move(self, event):
+        self.x = None
+        self.y = None
 
-window = tk.Tk()
-
-idle = [tk.PhotoImage(file=impath+'cat_idle.gif',format = 'gif -index %i' %(i)) for i in range(5)]#idle gif
-
-move_x = 0
-move_y = 0
+    def do_move(self, event):
+        deltax = event.x - self.x
+        deltay = event.y - self.y
+        move_x = self.winfo_x() + deltax
+        move_y = self.winfo_y() + deltay
+        self.geometry(f"+{move_x}+{move_y}")
 
 
-#window configuration
-window.geometry('300x300+'+str(x)+'+30')
-window.config(highlightbackground='black')
-label = tk.Label(window,bd=0,bg='black')
-window.overrideredirect(True)
-label.pack(side="right", fill="both", expand=True)
-label.bind("<ButtonPress-1>", start_move)
-label.bind("<ButtonRelease-1>", stop_move)
-label.bind("<B1-Motion>", do_move)
-window.wm_attributes('-transparentcolor','black')
-label.pack()
 
-#loop the program
-window.after(1,update,cycle,check,event_number,x)
-window.mainloop()
+pet = Pet()
+
+
+
