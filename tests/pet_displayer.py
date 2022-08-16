@@ -15,6 +15,7 @@ class Pet(tk.Tk):
         self.idle = [tk.PhotoImage(file=imagepath, format = 'gif -index %i' %(i)) for i in range(frame_num)]#idle gif
        
         self.set_window_config()
+        self.set_menu()
         self.set_labels()
 
     # ====== Initialization ======
@@ -28,6 +29,17 @@ class Pet(tk.Tk):
         self.label.bind("<B1-Motion>", self.do_move)
         
         self.label.pack()
+
+    def set_menu(self):
+        self.rclickmenu = tk.Menu(self, tearoff=0)
+        self.rclickmenu.add_command(label='Log Off', command=self.destroy)
+        self.bind("<Button-3>", self.open_action_menu)
+    
+    def open_action_menu(self, event):
+        try:
+            self.rclickmenu.tk_popup(event.x_root, event.y_root, 0)
+        finally:
+            self.rclickmenu.grab_release()
 
     # Configures window specifications
     def set_window_config(self):
