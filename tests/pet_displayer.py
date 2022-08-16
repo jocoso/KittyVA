@@ -4,28 +4,24 @@ import tkinter as tk
 import os
 
 class Pet(tk.Tk):
-    def __init__(self):
+    def __init__(self, imagepath, frame_num):
         tk.Tk.__init__(self)
+
+        self.cycle = 0
+        self.check = 0
+        self.idle_num =[i + 1 for i in range(frame_num)] # self.idle_num = [1, 2, 3, ...]
+        self.event_number = 0
+        self.frame = None
+        self.idle = [tk.PhotoImage(file=imagepath, format = 'gif -index %i' %(i)) for i in range(frame_num)]#idle gif
        
-        self.init_variables()
         self.set_window_config()
         self.set_labels()
 
     # ====== Initialization ======
-
-    # Initialize variables
-    def init_variables(self):
-        self.x = 30
-        self.curx = 30
-        self.cycle = 0
-        self.check = 0
-        self.idle_num =[1,2,3,4]
-        self.event_number = 0
-        self.frame = None
-        self.impath = os.path.realpath("../resources") + "\\"
-        self.idle = [tk.PhotoImage(file=self.impath+'cat_idle.gif',format = 'gif -index %i' %(i)) for i in range(4)]#idle gif
+        
 
     def set_labels(self):
+        # Floating Window
         self.label.pack(side="right", fill="both", expand=True)
         self.label.bind("<ButtonPress-1>", self.start_move)
         self.label.bind("<ButtonRelease-1>", self.stop_move)
@@ -88,7 +84,10 @@ class Pet(tk.Tk):
         self.mainloop()
 
 
-pet = Pet()
+impath = os.path.realpath("../resources") + "\\"
+imagepath = impath + 'cat_idle.gif'
+
+pet = Pet(imagepath, 4)
 pet.run()
 
 
