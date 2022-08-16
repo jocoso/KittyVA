@@ -6,24 +6,26 @@ import os
 class Pet(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
+       
+        self.init_variables()
+        self.set_window_config()
+        self.set_labels()
+
+    # ====== Initialization ======
+
+    # Initialize variables
+    def init_variables(self):
         self.x = 30
+        self.curx = 30
         self.cycle = 0
         self.check = 0
-        
         self.idle_num =[1,2,3,4]
         self.event_number = 0
         self.frame = None
         self.impath = os.path.realpath("../resources") + "\\"
-
         self.idle = [tk.PhotoImage(file=self.impath+'cat_idle.gif',format = 'gif -index %i' %(i)) for i in range(4)]#idle gif
-        
-         #window configuration
-        #self.geometry('300x300+'+str(self.x)+'+30')
-        self.config(highlightbackground='black')
-        self.label = tk.Label(self,bd=0,bg='black')
-        self.overrideredirect(True)
-        self.wm_attributes('-transparentcolor','black')
-        
+
+    def set_labels(self):
         self.label.pack(side="right", fill="both", expand=True)
         self.label.bind("<ButtonPress-1>", self.start_move)
         self.label.bind("<ButtonRelease-1>", self.stop_move)
@@ -31,9 +33,14 @@ class Pet(tk.Tk):
         
         self.label.pack()
 
-        #loop the program
-        self.after(1,self.update)
-        self.mainloop()
+    # Configures window specifications
+    def set_window_config(self):
+        self.config(highlightbackground='black')
+        self.label = tk.Label(self,bd=0,bg='black')
+        self.overrideredirect(True)
+        self.wm_attributes('-transparentcolor','black')
+
+    # ====== Window Display ======
 
     def event(self):        
         self.check = 0
@@ -52,9 +59,11 @@ class Pet(tk.Tk):
             self.frame = self.idle[self.cycle]
             self.gif_work()
             
-        self.geometry('300x300+'+str(self.x)+'+30')
+        self.geometry('300x300+'+str(self.winfo_x())+'+'+str(self.winfo_y()))
         self.label.configure(image=self.frame)
         self.after(1, self.event)
+
+    # ====== Movement =======
 
     def start_move(self, event):
         self.x = event.x
@@ -71,9 +80,16 @@ class Pet(tk.Tk):
         move_y = self.winfo_y() + deltay
         self.geometry(f"+{move_x}+{move_y}")
 
+    # ====== Public Function ======
+
+    def run(self):
+        #loop the program
+        self.after(1,self.update)
+        self.mainloop()
 
 
 pet = Pet()
+pet.run()
 
 
 
