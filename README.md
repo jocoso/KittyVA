@@ -18,5 +18,6 @@ To run, try the following in the terminal:
 
 python main.py
 
-https://user-images.githubusercontent.com/11726211/184873189-ed65c86f-5e75-4016-905b-2d88954a8ad1.mp4
+
+https://user-images.githubusercontent.com/11726211/185748245-b9735627-d7ab-44bb-9d5c-33cb2027dd76.mp4
 
