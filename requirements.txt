@@ -1,3 +1,4 @@
 requests<=2.2
 PyAutoGui<=0.9
 Pillow<=9.2
+pyttsx3<=2.9
