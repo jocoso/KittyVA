@@ -1,6 +1,6 @@
-import requests
 import random
 import os
+import requests
 
 DIR_FILE = "../resources/dirfile.txt"
 

@@ -1,4 +1,5 @@
-requests<=2.2
-PyAutoGui<=0.9
-Pillow<=9.2
-pyttsx3<=2.9
+urllib3
+requests
+PyAutoGui
+Pillow
+pyttsx3

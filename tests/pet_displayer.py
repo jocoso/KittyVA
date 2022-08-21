@@ -2,6 +2,7 @@ import random
 import threading
 import tkinter as tk
 import pyttsx3
+
 # from PIL import Image, ImageTk
 import os
 
@@ -9,35 +10,37 @@ class Pet(tk.Tk):
     def __init__(self, catimagepath, frame_num):
         tk.Tk.__init__(self)
 
-        #initializing variables
-        self.engine = pyttsx3.init()
-        self.cycle = 0
-        self.check = 0
-        self.idle_num =[i + 1 for i in range(frame_num)] # self.idle_num = [1, 2, 3, ...]
-        self.event_number = 0
-        self.frame = None
-        self.talking = False
-
         # Images
         self.idle = [tk.PhotoImage(file=catimagepath, format = 'gif -index %i' %(i)) for i in range(frame_num)]#idle gif
+        self.idle_num =[i + 1 for i in range(frame_num)] # self.idle_num = [1, 2, 3, ...]
 
         # Prepping
+        self.init_variables()
         self.set_window_config()
         self.set_menu()
         self.set_labels()
         self.set_inputs()
 
     # ====== Initialization ======
+    def init_variables(self):
+        #initializing variables
+        self.engine = pyttsx3.init()
+
+        envoiceid = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0"
+        self.engine.setProperty('voice', envoiceid)
+        
+        self.cycle = 0
+        self.check = 0
+        self.event_number = 0
+        self.frame = None
+        self.talking = False
+    
     def set_labels(self):
         # Floating Window
         self.label = tk.Label(self,bd=0,bg='black')
         self.label.pack(side="left", fill="both", expand=True)
         
         self.label.pack()
-
-    def say_hello(self):
-        self.engine.say('Hola')
-        self.engine.runAndWait()
 
     def set_inputs(self):
         self.bind("<Button-3>", self.open_action_menu)
@@ -47,11 +50,10 @@ class Pet(tk.Tk):
 
     def set_menu(self):
         self.rclickmenu = tk.Menu(self, tearoff=0)
-        self.rclickmenu.add_command(label='Hello', command=self.say_hello)
         self.rclickmenu.add_command(label='Log Off', command=self.exit_program)
 
     def exit_program(self):
-        self.engine.say('Adios')
+        self.engine.say('Good Bye!')
         self.engine.runAndWait()
         self.destroy()
         exit()
@@ -86,9 +88,28 @@ class Pet(tk.Tk):
             self.frame = self.idle[self.cycle]
             self.gif_work()
             
-        self.geometry('320x300+'+str(self.winfo_x())+'+'+str(self.winfo_y()))
+        self.geometry('300x300+'+str(self.winfo_x())+'+'+str(self.winfo_y()))
         self.label.configure(image=self.frame)
         self.after(1, self.event)
+
+    def get_user_input(self):
+        newwin = tk.Tk()
+        entry = tk.Entry(newwin)
+        entry.pack()
+        entry.focus_set()
+        entrybutton = tk.Button(newwin,
+                                text="OK",
+                                width=10,
+                                command=lambda: self.get_and_destroy(newwin, entry))
+        entrybutton.pack()
+        
+
+    # Gets the user input, destroy the window and return the input
+    def get_and_destroy(self, win, entry):
+        inp = entry.get()
+        win.destroy()
+
+        return inp
 
     # ====== Movement =======
     def start_move(self, event):
@@ -109,19 +130,15 @@ class Pet(tk.Tk):
     # ====== Public Functions ======
     def add_action(self, name, action):
         self.rclickmenu.add_command(label=name, command=action)
+
+    def say(self, text):
+        self.engine.say(text)
+        self.engine.runAndWait()
         
     def run(self):
         #loop the program
         self.after(1,self.update)
         self.mainloop()
-
-
-
-impath = os.path.realpath("../resources") + '\\'
-catimagepath = impath + 'cat_idle_cropped.gif'
-
-pet = Pet(catimagepath, 5)
-pet.run()
 
 
 
